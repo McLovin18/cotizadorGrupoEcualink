@@ -26,6 +26,41 @@
 </style>
 
 
+
+  <script>
+  //Light/Dark toggle
+    // ===== DARK / LIGHT MODE =====
+    (function() {
+      const STORAGE_KEY = 'ecualink_theme';
+      const toggle = document.getElementById('themeToggle');
+      
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(STORAGE_KEY, theme);
+      }
+
+      // Leer preferencia guardada o preferencia del sistema
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          applyTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+
+      // Escuchar cambios del sistema operativo
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem(STORAGE_KEY)) {
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    })();
+    </script>
+
+
 </head>
 <body>
  
@@ -557,44 +592,8 @@
   </script>
 
 
- 
-
-
 
   <script>
-  //Light/Dark toggle
-    // ===== DARK / LIGHT MODE =====
-    (function() {
-      const STORAGE_KEY = 'ecualink_theme';
-      const toggle = document.getElementById('themeToggle');
-      
-      function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem(STORAGE_KEY, theme);
-      }
-
-      // Leer preferencia guardada o preferencia del sistema
-      const saved = localStorage.getItem(STORAGE_KEY);
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-
-      if (toggle) {
-        toggle.addEventListener('click', () => {
-          const current = document.documentElement.getAttribute('data-theme');
-          applyTheme(current === 'dark' ? 'light' : 'dark');
-        });
-      }
-
-      // Escuchar cambios del sistema operativo
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem(STORAGE_KEY)) {
-          applyTheme(e.matches ? 'dark' : 'light');
-        }
-      });
-    })();
-
-
-
 
 
 
@@ -766,10 +765,7 @@
     } else {
       window.addEventListener('load', initAnimations);
     }
-    
-
-
-
+  
 
 
   </script>
