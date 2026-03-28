@@ -177,8 +177,9 @@ function initAnimations() {
 
 
 
+ 
     // ===== CARRUSEL PORTAFOLIO =====
-    // ===== CARRUSEL PORTAFOLIO INFINITO =====
+    // ===== CARRUSEL PORTAFOLIO =====
     (function() {
       var track      = document.getElementById('portafolioTrack');
       var dotsWrap   = document.getElementById('portafolioDots');
@@ -186,54 +187,51 @@ function initAnimations() {
       var nextBtn    = document.querySelector('.portafolio-next');
       if (!track) return;
 
-      var cards      = track.querySelectorAll('.portafolio-card');
-      var total      = cards.length;
+      // ORIGINALES
+      var originalCards = Array.from(track.querySelectorAll('.portafolio-card'));
+      var total         = originalCards.length;
+
       var current    = 0;
       var autoTimer  = null;
       var visible    = 0;
 
-      // Cuántas cards se ven según viewport
       function visibleCount() {
         if (window.innerWidth <= 600) return 1;
         if (window.innerWidth <= 900) return 2;
         return 3;
       }
 
-      // Calcular ancho de un paso
       function stepWidth() {
         var card = track.querySelector('.portafolio-card');
         var gap = 24;
         return card.offsetWidth + gap;
       }
 
-      // ===== CLONAR ELEMENTOS =====
+      // ===== CLONAR ELEMENTOS PARA LOOP =====
       function setupClones() {
         visible = visibleCount();
-
-        var currentCards = track.querySelectorAll('.portafolio-card');
-
-        // Limpiar clones anteriores
         track.innerHTML = '';
-        
-        // Reinsertar originales
-        currentCards.forEach(function(card) {
-          track.appendChild(card);
+
+        // Insertar originales
+        originalCards.forEach(function(card) {
+          track.appendChild(card.cloneNode(true));
         });
 
-        var allCards = track.querySelectorAll('.portafolio-card');
+        var allCards = Array.from(track.children);
 
-        // Clonar últimos (al inicio)
-        for (var i = visible; i > 0; i--) {
-          var clone = allCards[allCards.length - i].cloneNode(true);
+        // Clonar últimos "visible" al inicio
+        for (var i = total - visible; i < total; i++) {
+          var clone = allCards[i].cloneNode(true);
           track.insertBefore(clone, track.firstChild);
         }
 
-        // Clonar primeros (al final)
+        // Clonar primeros "visible" al final
         for (var i = 0; i < visible; i++) {
           var clone = allCards[i].cloneNode(true);
           track.appendChild(clone);
         }
 
+        // Posicionar en el primer slide “real”
         current = visible;
         moveWithoutAnimation();
       }
@@ -252,17 +250,14 @@ function initAnimations() {
 
       // ===== LOOP INFINITO =====
       track.addEventListener('transitionend', function() {
-        var totalReal = total;
-
-        if (current >= totalReal + visible) {
+        if (current >= total + visible) {
           track.style.transition = 'none';
-          current = visible;
+          current = visible; // reset al primer slide real
           moveWithoutAnimation();
         }
-
         if (current < visible) {
           track.style.transition = 'none';
-          current = totalReal + visible - 1;
+          current = total + visible - 1; // reset al último slide real
           moveWithoutAnimation();
         }
       });
@@ -278,7 +273,7 @@ function initAnimations() {
 
           dot.addEventListener('click', function() {
             var index = parseInt(this.dataset.index);
-            goTo(index + visible);
+            goTo(index + visible); // ajustar con clones
             resetAuto();
           });
 
@@ -289,7 +284,6 @@ function initAnimations() {
       function updateDots() {
         var dots = dotsWrap.querySelectorAll('.portafolio-dot');
         var realIndex = (current - visible) % total;
-
         if (realIndex < 0) realIndex += total;
 
         dots.forEach(function(d, i) {
@@ -329,7 +323,6 @@ function initAnimations() {
 
       track.addEventListener('touchend', function(e) {
         var diff = touchStartX - e.changedTouches[0].clientX;
-
         if (Math.abs(diff) > 50) {
           goTo(diff > 0 ? current + 1 : current - 1);
           resetAuto();
@@ -337,12 +330,17 @@ function initAnimations() {
       }, { passive: true });
 
       // ===== RESIZE =====
+      var lastVisible = visibleCount();
       window.addEventListener('resize', function() {
         clearTimeout(window._portafolioResizeTimer);
 
         window._portafolioResizeTimer = setTimeout(function() {
-          setupClones();
-          buildDots();
+          var newVisible = visibleCount();
+          if (newVisible !== lastVisible) {
+            setupClones();
+            buildDots();
+            lastVisible = newVisible;
+          }
         }, 200);
       });
 

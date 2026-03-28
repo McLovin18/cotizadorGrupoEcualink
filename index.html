@@ -28,6 +28,23 @@
 
 
   <script>
+
+        // ===== MOBILE NAV =====
+    function toggleNav() {
+      const nav = document.getElementById('mainNav');
+      const overlay = document.getElementById('mobileNavOverlay');
+      const btn = document.getElementById('hamburger');
+      const open = nav.classList.toggle('nav-open');
+      overlay.classList.toggle('active', open);
+      btn.classList.toggle('is-open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    function closeNav() {
+      document.getElementById('mainNav').classList.remove('nav-open');
+      document.getElementById('mobileNavOverlay').classList.remove('active');
+      document.getElementById('hamburger').classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
   //Light/Dark toggle
     // ===== DARK / LIGHT MODE =====
     (function() {
@@ -65,179 +82,176 @@
 
 
     // ===== CARRUSEL PORTAFOLIO =====
-  (function() {
-    var track      = document.getElementById('portafolioTrack');
-    var dotsWrap   = document.getElementById('portafolioDots');
-    var prevBtn    = document.querySelector('.portafolio-prev');
-    var nextBtn    = document.querySelector('.portafolio-next');
-    if (!track) return;
+    (function() {
+      var track      = document.getElementById('portafolioTrack');
+      var dotsWrap   = document.getElementById('portafolioDots');
+      var prevBtn    = document.querySelector('.portafolio-prev');
+      var nextBtn    = document.querySelector('.portafolio-next');
+      if (!track) return;
 
-    var cards      = track.querySelectorAll('.portafolio-card');
-    var total      = cards.length;
-    var current    = 0;
-    var autoTimer  = null;
-    var visible    = 0;
+      // ORIGINALES
+      var originalCards = Array.from(track.querySelectorAll('.portafolio-card'));
+      var total         = originalCards.length;
 
-    // Cuántas cards se ven según viewport
-    function visibleCount() {
-      if (window.innerWidth <= 600) return 1;
-      if (window.innerWidth <= 900) return 2;
-      return 3;
-    }
+      var current    = 0;
+      var autoTimer  = null;
+      var visible    = 0;
 
-    // Calcular ancho de un paso
-    function stepWidth() {
-      var card = track.querySelector('.portafolio-card');
-      var gap = 24;
-      return card.offsetWidth + gap;
-    }
-
-    // ===== CLONAR ELEMENTOS =====
-    function setupClones() {
-      visible = visibleCount();
-
-      var currentCards = track.querySelectorAll('.portafolio-card');
-
-      // Limpiar clones anteriores
-      track.innerHTML = '';
-      
-      // Reinsertar originales
-      currentCards.forEach(function(card) {
-        track.appendChild(card);
-      });
-
-      var allCards = track.querySelectorAll('.portafolio-card');
-
-      // Clonar últimos (al inicio)
-      for (var i = visible; i > 0; i--) {
-        var clone = allCards[allCards.length - i].cloneNode(true);
-        track.insertBefore(clone, track.firstChild);
+      function visibleCount() {
+        if (window.innerWidth <= 600) return 1;
+        if (window.innerWidth <= 900) return 2;
+        return 3;
       }
 
-      // Clonar primeros (al final)
-      for (var i = 0; i < visible; i++) {
-        var clone = allCards[i].cloneNode(true);
-        track.appendChild(clone);
+      function stepWidth() {
+        var card = track.querySelector('.portafolio-card');
+        var gap = 24;
+        return card.offsetWidth + gap;
       }
 
-      current = visible;
-      moveWithoutAnimation();
-    }
+      // ===== CLONAR ELEMENTOS PARA LOOP =====
+      function setupClones() {
+        visible = visibleCount();
+        track.innerHTML = '';
 
-    function moveWithoutAnimation() {
-      track.style.transition = 'none';
-      track.style.transform = 'translateX(-' + (current * stepWidth()) + 'px)';
-    }
+        // Insertar originales
+        originalCards.forEach(function(card) {
+          track.appendChild(card.cloneNode(true));
+        });
 
-    function goTo(index) {
-      current = index;
-      track.style.transition = 'transform 0.5s ease';
-      track.style.transform = 'translateX(-' + (current * stepWidth()) + 'px)';
-      updateDots();
-    }
+        var allCards = Array.from(track.children);
 
-    // ===== LOOP INFINITO =====
-    track.addEventListener('transitionend', function() {
-      var totalReal = total;
+        // Clonar últimos "visible" al inicio
+        for (var i = total - visible; i < total; i++) {
+          var clone = allCards[i].cloneNode(true);
+          track.insertBefore(clone, track.firstChild);
+        }
 
-      if (current >= totalReal + visible) {
-        track.style.transition = 'none';
+        // Clonar primeros "visible" al final
+        for (var i = 0; i < visible; i++) {
+          var clone = allCards[i].cloneNode(true);
+          track.appendChild(clone);
+        }
+
+        // Posicionar en el primer slide “real”
         current = visible;
         moveWithoutAnimation();
       }
 
-      if (current < visible) {
+      function moveWithoutAnimation() {
         track.style.transition = 'none';
-        current = totalReal + visible - 1;
-        moveWithoutAnimation();
+        track.style.transform = 'translateX(-' + (current * stepWidth()) + 'px)';
       }
-    });
 
-    // ===== DOTS =====
-    function buildDots() {
-      dotsWrap.innerHTML = '';
-
-      for (var i = 0; i < total; i++) {
-        var dot = document.createElement('button');
-        dot.className = 'portafolio-dot' + (i === 0 ? ' active' : '');
-        dot.dataset.index = i;
-
-        dot.addEventListener('click', function() {
-          var index = parseInt(this.dataset.index);
-          goTo(index + visible);
-          resetAuto();
-        });
-
-        dotsWrap.appendChild(dot);
+      function goTo(index) {
+        current = index;
+        track.style.transition = 'transform 0.5s ease';
+        track.style.transform = 'translateX(-' + (current * stepWidth()) + 'px)';
+        updateDots();
       }
-    }
 
-    function updateDots() {
-      var dots = dotsWrap.querySelectorAll('.portafolio-dot');
-      var realIndex = (current - visible) % total;
-
-      if (realIndex < 0) realIndex += total;
-
-      dots.forEach(function(d, i) {
-        d.classList.toggle('active', i === realIndex);
+      // ===== LOOP INFINITO =====
+      track.addEventListener('transitionend', function() {
+        if (current >= total + visible) {
+          track.style.transition = 'none';
+          current = visible; // reset al primer slide real
+          moveWithoutAnimation();
+        }
+        if (current < visible) {
+          track.style.transition = 'none';
+          current = total + visible - 1; // reset al último slide real
+          moveWithoutAnimation();
+        }
       });
-    }
 
-    // ===== AUTO PLAY =====
-    function startAuto() {
-      autoTimer = setInterval(function() {
-        goTo(current + 1);
-      }, 3000);
-    }
+      // ===== DOTS =====
+      function buildDots() {
+        dotsWrap.innerHTML = '';
 
-    function resetAuto() {
-      clearInterval(autoTimer);
-      startAuto();
-    }
+        for (var i = 0; i < total; i++) {
+          var dot = document.createElement('button');
+          dot.className = 'portafolio-dot' + (i === 0 ? ' active' : '');
+          dot.dataset.index = i;
 
-    // ===== BOTONES =====
-    prevBtn.addEventListener('click', function() {
-      goTo(current - 1);
-      resetAuto();
-    });
+          dot.addEventListener('click', function() {
+            var index = parseInt(this.dataset.index);
+            goTo(index + visible); // ajustar con clones
+            resetAuto();
+          });
 
-    nextBtn.addEventListener('click', function() {
-      goTo(current + 1);
-      resetAuto();
-    });
-
-    // ===== SWIPE =====
-    var touchStartX = 0;
-
-    track.addEventListener('touchstart', function(e) {
-      touchStartX = e.touches[0].clientX;
-    }, { passive: true });
-
-    track.addEventListener('touchend', function(e) {
-      var diff = touchStartX - e.changedTouches[0].clientX;
-
-      if (Math.abs(diff) > 50) {
-        goTo(diff > 0 ? current + 1 : current - 1);
-        resetAuto();
+          dotsWrap.appendChild(dot);
+        }
       }
-    }, { passive: true });
 
-    // ===== RESIZE =====
-    window.addEventListener('resize', function() {
-      clearTimeout(window._portafolioResizeTimer);
+      function updateDots() {
+        var dots = dotsWrap.querySelectorAll('.portafolio-dot');
+        var realIndex = (current - visible) % total;
+        if (realIndex < 0) realIndex += total;
 
-      window._portafolioResizeTimer = setTimeout(function() {
-        setupClones();
-        buildDots();
-      }, 200);
-    });
+        dots.forEach(function(d, i) {
+          d.classList.toggle('active', i === realIndex);
+        });
+      }
 
-    // ===== INIT =====
-    setupClones();
-    buildDots();
-    startAuto();
+      // ===== AUTO PLAY =====
+      function startAuto() {
+        autoTimer = setInterval(function() {
+          goTo(current + 1);
+        }, 3000);
+      }
 
-  })();
+      function resetAuto() {
+        clearInterval(autoTimer);
+        startAuto();
+      }
+
+      // ===== BOTONES =====
+      prevBtn.addEventListener('click', function() {
+        goTo(current - 1);
+        resetAuto();
+      });
+
+      nextBtn.addEventListener('click', function() {
+        goTo(current + 1);
+        resetAuto();
+      });
+
+      // ===== SWIPE =====
+      var touchStartX = 0;
+
+      track.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      track.addEventListener('touchend', function(e) {
+        var diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) {
+          goTo(diff > 0 ? current + 1 : current - 1);
+          resetAuto();
+        }
+      }, { passive: true });
+
+      // ===== RESIZE =====
+      var lastVisible = visibleCount();
+      window.addEventListener('resize', function() {
+        clearTimeout(window._portafolioResizeTimer);
+
+        window._portafolioResizeTimer = setTimeout(function() {
+          var newVisible = visibleCount();
+          if (newVisible !== lastVisible) {
+            setupClones();
+            buildDots();
+            lastVisible = newVisible;
+          }
+        }, 200);
+      });
+
+      // ===== INIT =====
+      setupClones();
+      buildDots();
+      startAuto();
+
+    })();
 
 
     </script>
@@ -863,27 +877,9 @@
 
 
   <script>
-
-
-
     document.getElementById('year').textContent = new Date().getFullYear();
  
-    // ===== MOBILE NAV =====
-    function toggleNav() {
-      const nav = document.getElementById('mainNav');
-      const overlay = document.getElementById('mobileNavOverlay');
-      const btn = document.getElementById('hamburger');
-      const open = nav.classList.toggle('nav-open');
-      overlay.classList.toggle('active', open);
-      btn.classList.toggle('is-open', open);
-      document.body.style.overflow = open ? 'hidden' : '';
-    }
-    function closeNav() {
-      document.getElementById('mainNav').classList.remove('nav-open');
-      document.getElementById('mobileNavOverlay').classList.remove('active');
-      document.getElementById('hamburger').classList.remove('is-open');
-      document.body.style.overflow = '';
-    }
+
  
     // ===== MOBILE COTIZADOR STEP HEADER =====
     const stepTitles = [
