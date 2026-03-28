@@ -26,6 +26,223 @@
 </style>
 
 
+
+  <script>
+  //Light/Dark toggle
+    // ===== DARK / LIGHT MODE =====
+    (function() {
+      const STORAGE_KEY = 'ecualink_theme';
+      const toggle = document.getElementById('themeToggle');
+      
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(STORAGE_KEY, theme);
+      }
+
+      // Leer preferencia guardada o preferencia del sistema
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          applyTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+
+      // Escuchar cambios del sistema operativo
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem(STORAGE_KEY)) {
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    })();
+
+
+
+
+
+
+    // ===== CARRUSEL PORTAFOLIO =====
+  (function() {
+    var track      = document.getElementById('portafolioTrack');
+    var dotsWrap   = document.getElementById('portafolioDots');
+    var prevBtn    = document.querySelector('.portafolio-prev');
+    var nextBtn    = document.querySelector('.portafolio-next');
+    if (!track) return;
+
+    var cards      = track.querySelectorAll('.portafolio-card');
+    var total      = cards.length;
+    var current    = 0;
+    var autoTimer  = null;
+    var visible    = 0;
+
+    // Cuántas cards se ven según viewport
+    function visibleCount() {
+      if (window.innerWidth <= 600) return 1;
+      if (window.innerWidth <= 900) return 2;
+      return 3;
+    }
+
+    // Calcular ancho de un paso
+    function stepWidth() {
+      var card = track.querySelector('.portafolio-card');
+      var gap = 24;
+      return card.offsetWidth + gap;
+    }
+
+    // ===== CLONAR ELEMENTOS =====
+    function setupClones() {
+      visible = visibleCount();
+
+      var currentCards = track.querySelectorAll('.portafolio-card');
+
+      // Limpiar clones anteriores
+      track.innerHTML = '';
+      
+      // Reinsertar originales
+      currentCards.forEach(function(card) {
+        track.appendChild(card);
+      });
+
+      var allCards = track.querySelectorAll('.portafolio-card');
+
+      // Clonar últimos (al inicio)
+      for (var i = visible; i > 0; i--) {
+        var clone = allCards[allCards.length - i].cloneNode(true);
+        track.insertBefore(clone, track.firstChild);
+      }
+
+      // Clonar primeros (al final)
+      for (var i = 0; i < visible; i++) {
+        var clone = allCards[i].cloneNode(true);
+        track.appendChild(clone);
+      }
+
+      current = visible;
+      moveWithoutAnimation();
+    }
+
+    function moveWithoutAnimation() {
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(-' + (current * stepWidth()) + 'px)';
+    }
+
+    function goTo(index) {
+      current = index;
+      track.style.transition = 'transform 0.5s ease';
+      track.style.transform = 'translateX(-' + (current * stepWidth()) + 'px)';
+      updateDots();
+    }
+
+    // ===== LOOP INFINITO =====
+    track.addEventListener('transitionend', function() {
+      var totalReal = total;
+
+      if (current >= totalReal + visible) {
+        track.style.transition = 'none';
+        current = visible;
+        moveWithoutAnimation();
+      }
+
+      if (current < visible) {
+        track.style.transition = 'none';
+        current = totalReal + visible - 1;
+        moveWithoutAnimation();
+      }
+    });
+
+    // ===== DOTS =====
+    function buildDots() {
+      dotsWrap.innerHTML = '';
+
+      for (var i = 0; i < total; i++) {
+        var dot = document.createElement('button');
+        dot.className = 'portafolio-dot' + (i === 0 ? ' active' : '');
+        dot.dataset.index = i;
+
+        dot.addEventListener('click', function() {
+          var index = parseInt(this.dataset.index);
+          goTo(index + visible);
+          resetAuto();
+        });
+
+        dotsWrap.appendChild(dot);
+      }
+    }
+
+    function updateDots() {
+      var dots = dotsWrap.querySelectorAll('.portafolio-dot');
+      var realIndex = (current - visible) % total;
+
+      if (realIndex < 0) realIndex += total;
+
+      dots.forEach(function(d, i) {
+        d.classList.toggle('active', i === realIndex);
+      });
+    }
+
+    // ===== AUTO PLAY =====
+    function startAuto() {
+      autoTimer = setInterval(function() {
+        goTo(current + 1);
+      }, 3000);
+    }
+
+    function resetAuto() {
+      clearInterval(autoTimer);
+      startAuto();
+    }
+
+    // ===== BOTONES =====
+    prevBtn.addEventListener('click', function() {
+      goTo(current - 1);
+      resetAuto();
+    });
+
+    nextBtn.addEventListener('click', function() {
+      goTo(current + 1);
+      resetAuto();
+    });
+
+    // ===== SWIPE =====
+    var touchStartX = 0;
+
+    track.addEventListener('touchstart', function(e) {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    track.addEventListener('touchend', function(e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+
+      if (Math.abs(diff) > 50) {
+        goTo(diff > 0 ? current + 1 : current - 1);
+        resetAuto();
+      }
+    }, { passive: true });
+
+    // ===== RESIZE =====
+    window.addEventListener('resize', function() {
+      clearTimeout(window._portafolioResizeTimer);
+
+      window._portafolioResizeTimer = setTimeout(function() {
+        setupClones();
+        buildDots();
+      }, 200);
+    });
+
+    // ===== INIT =====
+    setupClones();
+    buildDots();
+    startAuto();
+
+  })();
+
+
+    </script>
+
+
 </head>
 <body>
  
@@ -323,6 +540,92 @@
 
 
 
+  <!-- ===== PORTAFOLIO ===== -->
+  <section class="section-portafolio">
+    <div class="wrap">
+      <p class="section-tag">NUESTRO TRABAJO</p>
+      <h2 class="section-title">Sitios web que <span class="gradient-text">desarrollamos</span></h2>
+      <p class="section-sub">Proyectos reales, resultados medibles</p>
+    </div>
+
+    <div class="portafolio-outer">
+      <button class="portafolio-arrow portafolio-prev" aria-label="Anterior">‹</button>
+
+      <div class="portafolio-track-wrap">
+        <div class="portafolio-track" id="portafolioTrack">
+
+          <!-- Card 1 -->
+          <div class="portafolio-card">
+            <div class="portafolio-img-wrap">
+              <img src="/src/img_1.png" alt="Promociones Samsung Ecuador" loading="lazy">
+              <div class="portafolio-overlay">
+                <a href="https://www.samsungecuador.com/" target="_blank" class="portafolio-link">Ver sitio ↗</a>
+              </div>
+            </div>
+            <div class="portafolio-info">
+              <span class="portafolio-tag">E-commerce</span>
+              <h3>Promociones Samsung Ecuador</h3>
+              <p>Plataforma de promociones con selector de ciudades, centros comerciales y suscripción a ofertas para la marca Samsung en Ecuador.</p>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="portafolio-card">
+            <div class="portafolio-img-wrap">
+              <img src="/src/img_4.png" alt="Dr. Yerpún Solar" loading="lazy">
+              <div class="portafolio-overlay">
+                <a href="https://dryerpun.solar/" target="_blank" class="portafolio-link">Ver sitio ↗</a>
+              </div>
+            </div>
+            <div class="portafolio-info">
+              <span class="portafolio-tag">Salud</span>
+              <h3>Dr. Yerpún Solar — Medicina Biológica</h3>
+              <p>Sitio clínico para programas de acompañamiento en reversión de enfermedades crónicas con enfoque biointegrativo y personalizado.</p>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="portafolio-card">
+            <div class="portafolio-img-wrap">
+              <img src="/src/img_2.png" alt="LEE Ecuador" loading="lazy">
+              <div class="portafolio-overlay">
+                <a href="https://lee.com.ec/" target="_blank" class="portafolio-link">Ver sitio ↗</a>
+              </div>
+            </div>
+            <div class="portafolio-info">
+              <span class="portafolio-tag">E-commerce</span>
+              <h3>LEE Ecuador — Jeans para hombres y mujeres</h3>
+              <p>Tienda online con catálogo completo de jeans y ropa, envíos gratis, descuentos y colecciones para hombre y mujer.</p>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="portafolio-card">
+            <div class="portafolio-img-wrap">
+              <img src="/src/img_3.png" alt="Promo Big 2026" loading="lazy">
+              <div class="portafolio-overlay">
+                <a href="https://promobig.ec/" target="_blank" class="portafolio-link">Ver sitio ↗</a>
+              </div>
+            </div>
+            <div class="portafolio-info">
+              <span class="portafolio-tag">Promoción</span>
+              <h3>Promo Big 2026</h3>
+              <p>Plataforma de canje de códigos promocionales de Big Cola con premios en dinero y sorteo de viajes para apoyar a La Tri.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <button class="portafolio-arrow portafolio-next" aria-label="Siguiente">›</button>
+    </div>
+
+    <!-- Dots -->
+    <div class="portafolio-dots" id="portafolioDots"></div>
+  </section>
+
+
+
  
   <!-- ===== FAQ ===== -->
   <section id="faq" class="wrap section-faq">
@@ -464,6 +767,7 @@
 
   <script src="plans.js"></script>
   <script src="script.js"></script>
+  
   <script>
     // DESPUÉS — ejecuta siempre, sin importar si load ya pasó
     function initAnimations() {
@@ -557,44 +861,8 @@
   </script>
 
 
- 
-
-
 
   <script>
-  //Light/Dark toggle
-    // ===== DARK / LIGHT MODE =====
-    (function() {
-      const STORAGE_KEY = 'ecualink_theme';
-      const toggle = document.getElementById('themeToggle');
-      
-      function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem(STORAGE_KEY, theme);
-      }
-
-      // Leer preferencia guardada o preferencia del sistema
-      const saved = localStorage.getItem(STORAGE_KEY);
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-
-      if (toggle) {
-        toggle.addEventListener('click', () => {
-          const current = document.documentElement.getAttribute('data-theme');
-          applyTheme(current === 'dark' ? 'light' : 'dark');
-        });
-      }
-
-      // Escuchar cambios del sistema operativo
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem(STORAGE_KEY)) {
-          applyTheme(e.matches ? 'dark' : 'light');
-        }
-      });
-    })();
-
-
-
 
 
 

@@ -1187,3 +1187,235 @@ body{
 }
 
 
+
+
+
+/* ===== PORTAFOLIO CARRUSEL ===== */
+.section-portafolio {
+  padding: 64px 0;
+  overflow: hidden;
+}
+
+.portafolio-outer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 40px;
+}
+
+.portafolio-track-wrap {
+  overflow: hidden;
+  width: 100%;
+}
+
+.portafolio-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.5s cubic-bezier(0.2,0.9,0.2,1);
+  will-change: transform;
+}
+
+/* Card */
+.portafolio-card {
+  flex: 0 0 calc(33.333% - 16px);
+  min-width: calc(33.333% - 16px);
+  background: var(--card);
+  border: 1px solid rgba(20,20,30,0.06);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(20,20,50,0.06);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.portafolio-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(20,20,50,0.12);
+}
+
+/* Imagen */
+.portafolio-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: #f0f0f8;
+}
+
+.portafolio-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.portafolio-card:hover .portafolio-img-wrap img {
+  transform: scale(1.04);
+}
+
+/* Overlay con link */
+.portafolio-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(28,75,66,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.portafolio-card:hover .portafolio-overlay {
+  opacity: 1;
+}
+
+.portafolio-link {
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  background: var(--accent);
+  color: var(--accent-dark);
+  padding: 10px 22px;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.portafolio-link:hover {
+  background: #d4ff1a;
+}
+
+/* Info */
+.portafolio-info {
+  padding: 20px 22px 24px;
+}
+
+.portafolio-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  background: rgba(180,231,23,0.15);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.portafolio-info h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: #111;
+  line-height: 1.3;
+}
+
+.portafolio-info p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Flechas */
+.portafolio-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(20,20,30,0.12);
+  background: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #333;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  z-index: 2;
+  margin: 0 12px;
+  line-height: 1;
+}
+
+.portafolio-arrow:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+  transform: scale(1.08);
+}
+
+.portafolio-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+  transform: none;
+}
+
+/* Dots */
+.portafolio-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.portafolio-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(20,20,30,0.15);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  padding: 0;
+}
+
+.portafolio-dot.active {
+  background: var(--accent-dark);
+  transform: scale(1.3);
+}
+
+/* Dark mode */
+[data-theme="dark"] .portafolio-card {
+  background: var(--card);
+  border-color: rgba(255,255,255,0.05);
+}
+
+[data-theme="dark"] .portafolio-info h3 { color: #e8f5f2; }
+[data-theme="dark"] .portafolio-img-wrap { background: #1a1826; }
+[data-theme="dark"] .portafolio-arrow {
+  background: #1e2d2a;
+  border-color: rgba(255,255,255,0.1);
+  color: #e8f5f2;
+}
+[data-theme="dark"] .portafolio-dot { background: rgba(255,255,255,0.15); }
+[data-theme="dark"] .portafolio-dot.active { background: var(--accent); }
+[data-theme="dark"] .portafolio-tag {
+  background: rgba(180,231,23,0.1);
+  color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .portafolio-card {
+    flex: 0 0 calc(50% - 12px);
+    min-width: calc(50% - 12px);
+  }
+}
+
+@media (max-width: 600px) {
+  .portafolio-card {
+    flex: 0 0 calc(100% - 32px);
+    min-width: calc(100% - 32px);
+  }
+  .portafolio-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    margin: 0 6px;
+  }
+  .section-portafolio { padding: 48px 0; }
+}
+

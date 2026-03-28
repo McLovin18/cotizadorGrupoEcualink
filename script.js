@@ -82,6 +82,9 @@ function goToCardIndex(containerSelector, index) {
     })();
 
 
+    
+
+
 
 
 
@@ -172,6 +175,183 @@ function initAnimations() {
     }
 
 
+
+
+    // ===== CARRUSEL PORTAFOLIO =====
+    // ===== CARRUSEL PORTAFOLIO INFINITO =====
+    (function() {
+      var track      = document.getElementById('portafolioTrack');
+      var dotsWrap   = document.getElementById('portafolioDots');
+      var prevBtn    = document.querySelector('.portafolio-prev');
+      var nextBtn    = document.querySelector('.portafolio-next');
+      if (!track) return;
+
+      var cards      = track.querySelectorAll('.portafolio-card');
+      var total      = cards.length;
+      var current    = 0;
+      var autoTimer  = null;
+      var visible    = 0;
+
+      // Cuántas cards se ven según viewport
+      function visibleCount() {
+        if (window.innerWidth <= 600) return 1;
+        if (window.innerWidth <= 900) return 2;
+        return 3;
+      }
+
+      // Calcular ancho de un paso
+      function stepWidth() {
+        var card = track.querySelector('.portafolio-card');
+        var gap = 24;
+        return card.offsetWidth + gap;
+      }
+
+      // ===== CLONAR ELEMENTOS =====
+      function setupClones() {
+        visible = visibleCount();
+
+        var currentCards = track.querySelectorAll('.portafolio-card');
+
+        // Limpiar clones anteriores
+        track.innerHTML = '';
+        
+        // Reinsertar originales
+        currentCards.forEach(function(card) {
+          track.appendChild(card);
+        });
+
+        var allCards = track.querySelectorAll('.portafolio-card');
+
+        // Clonar últimos (al inicio)
+        for (var i = visible; i > 0; i--) {
+          var clone = allCards[allCards.length - i].cloneNode(true);
+          track.insertBefore(clone, track.firstChild);
+        }
+
+        // Clonar primeros (al final)
+        for (var i = 0; i < visible; i++) {
+          var clone = allCards[i].cloneNode(true);
+          track.appendChild(clone);
+        }
+
+        current = visible;
+        moveWithoutAnimation();
+      }
+
+      function moveWithoutAnimation() {
+        track.style.transition = 'none';
+        track.style.transform = 'translateX(-' + (current * stepWidth()) + 'px)';
+      }
+
+      function goTo(index) {
+        current = index;
+        track.style.transition = 'transform 0.5s ease';
+        track.style.transform = 'translateX(-' + (current * stepWidth()) + 'px)';
+        updateDots();
+      }
+
+      // ===== LOOP INFINITO =====
+      track.addEventListener('transitionend', function() {
+        var totalReal = total;
+
+        if (current >= totalReal + visible) {
+          track.style.transition = 'none';
+          current = visible;
+          moveWithoutAnimation();
+        }
+
+        if (current < visible) {
+          track.style.transition = 'none';
+          current = totalReal + visible - 1;
+          moveWithoutAnimation();
+        }
+      });
+
+      // ===== DOTS =====
+      function buildDots() {
+        dotsWrap.innerHTML = '';
+
+        for (var i = 0; i < total; i++) {
+          var dot = document.createElement('button');
+          dot.className = 'portafolio-dot' + (i === 0 ? ' active' : '');
+          dot.dataset.index = i;
+
+          dot.addEventListener('click', function() {
+            var index = parseInt(this.dataset.index);
+            goTo(index + visible);
+            resetAuto();
+          });
+
+          dotsWrap.appendChild(dot);
+        }
+      }
+
+      function updateDots() {
+        var dots = dotsWrap.querySelectorAll('.portafolio-dot');
+        var realIndex = (current - visible) % total;
+
+        if (realIndex < 0) realIndex += total;
+
+        dots.forEach(function(d, i) {
+          d.classList.toggle('active', i === realIndex);
+        });
+      }
+
+      // ===== AUTO PLAY =====
+      function startAuto() {
+        autoTimer = setInterval(function() {
+          goTo(current + 1);
+        }, 3000);
+      }
+
+      function resetAuto() {
+        clearInterval(autoTimer);
+        startAuto();
+      }
+
+      // ===== BOTONES =====
+      prevBtn.addEventListener('click', function() {
+        goTo(current - 1);
+        resetAuto();
+      });
+
+      nextBtn.addEventListener('click', function() {
+        goTo(current + 1);
+        resetAuto();
+      });
+
+      // ===== SWIPE =====
+      var touchStartX = 0;
+
+      track.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      track.addEventListener('touchend', function(e) {
+        var diff = touchStartX - e.changedTouches[0].clientX;
+
+        if (Math.abs(diff) > 50) {
+          goTo(diff > 0 ? current + 1 : current - 1);
+          resetAuto();
+        }
+      }, { passive: true });
+
+      // ===== RESIZE =====
+      window.addEventListener('resize', function() {
+        clearTimeout(window._portafolioResizeTimer);
+
+        window._portafolioResizeTimer = setTimeout(function() {
+          setupClones();
+          buildDots();
+        }, 200);
+      });
+
+      // ===== INIT =====
+      setupClones();
+      buildDots();
+      startAuto();
+
+    })();
 
 
 
