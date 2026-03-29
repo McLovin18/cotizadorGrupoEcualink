@@ -5,7 +5,7 @@ const webPlans = [
   {
     id: 'starter',
     name: 'Starter',
-    price: 399,
+    price: 500,
     days: '2-7 días hábiles',
     shortDesc: 'Para validar ideas y tener presencia inmediata',
     tagline: 'Simple y Rápido',
@@ -18,12 +18,12 @@ const webPlans = [
       '1 ronda de revisión',
       'Entrega: 2–7 días hábiles'
     ],
-    idealFor: ['MVPs', 'Emprendedores', 'Negocios que necesitan algo rápido', 'Sin blog, sin e-commerce']
+    idealFor: ['MVPs', 'Emprendedores', 'Negocios que necesitan algo rápido', 'Sin blog, sin eCommerce']
   },
   {
     id: 'business',
     name: 'Business',
-    price: 499,
+    price: 1000,
     days: '7-14 días hábiles',
     shortDesc: 'Sitio institucional de varias páginas para crecer profesionalmente',
     tagline: 'Profesional y flexible',
@@ -41,7 +41,7 @@ const webPlans = [
   {
     id: 'pro',
     name: 'Pro Plus',
-    price: 999,
+    price: 1500,
     days: '14-30 días hábiles',
     shortDesc: 'Paquete completo para marcas y tiendas en línea. WordPress o Shopify.',
     tagline: 'Completo y escalable',
@@ -54,7 +54,7 @@ const webPlans = [
       'SEO avanzado',
       '3 rondas de revisión'
     ],
-    idealFor: ['Marcas', 'E-commerce pequeño', 'Proyectos con crecimiento planificado']
+    idealFor: ['Marcas', 'eCommerce', 'Proyectos con crecimiento planificado']
   },
 ];
 

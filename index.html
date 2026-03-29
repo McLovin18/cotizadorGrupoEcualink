@@ -24,11 +24,17 @@
     transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2,0.9,0.2,1);
   }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init('V0HsAyHwWShGTYVWo');
+  </script>
 
 
 
 
   <script>
+
+    
 
         // ===== MOBILE NAV =====
     function toggleNav() {
@@ -431,12 +437,38 @@
       <div class="modal-body">
         <div class="summary final-summary" id="finalSummary"></div>
         <form id="contactForm" class="contact-form">
-          <label>Nombre</label>
-          <input type="text" id="clientName" placeholder="Tu nombre" required>
-          <label>Teléfono (WhatsApp)</label>
-          <input type="tel" id="clientPhone" placeholder="+5939XXXXXXXX" required>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="clientName" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+              <label>Apellido</label>
+              <input type="text" id="clientLastName" placeholder="Tu apellido" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>WhatsApp</label>
+              <input type="tel" id="clientPhone" placeholder="+5939XXXXXXXX" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="clientEmail" placeholder="tu@email.com" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Empresa</label>
+              <input type="text" id="clientEmpresa" placeholder="Nombre de tu empresa">
+            </div>
+            <div class="form-group">
+              <label>Cargo</label>
+              <input type="text" id="clientCargo" placeholder="Tu cargo o rol">
+            </div>
+          </div>
           <label>Mensaje Adicional (Opcional)</label>
-          <textarea id="clientNote" rows="6" placeholder="Cuentanos más sobre tu proyecto"></textarea>
+          <textarea id="clientNote" rows="4" placeholder="Cuéntanos más sobre tu proyecto"></textarea>
         </form>
       </div>
       <div class="modal-actions">

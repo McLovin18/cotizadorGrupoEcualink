@@ -51,17 +51,18 @@ body{
   margin:0 0 20px;
   letter-spacing:-1.5px;
 }
-.gradient-text{
-  background:linear-gradient(90deg, #7c5cfc, #25d4ae);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
+.gradient-text {
+  background: linear-gradient(90deg, #B4E717, #8fb20a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-.gradient-text-2{
-  background:linear-gradient(90deg, #25d4ae, #b5e718);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
+
+.gradient-text-2 {
+  background: linear-gradient(90deg, #8fb20a, #B4E717);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .hero-sub{
   font-size:18px;color:var(--muted);line-height:1.6;
@@ -1474,4 +1475,33 @@ body{
   background: #d4ff1a;
   font-weight: 800;
   color: #0a0f0e;
+}
+
+
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.form-group input {
+  margin-top: 6px;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }

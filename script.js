@@ -494,7 +494,7 @@ function renderPlans() {
         <ul class="features">${visible.map(f=>`<li>${f}</li>`).join('')}</ul>
         <div class="extra-details">
           ${hidden.length ? `<ul class="features hidden-list">${hidden.map(f=>`<li>${f}</li>`).join('')}</ul>` : ''}
-          ${ideal.length ? `<div class="ideal"><strong>IDEAL PARA:</strong><ul class="ideal-list">${ideal.map(i=>`<li>${i}</li>`).join('')}</ul></div>` : ''}
+          ${ideal.length ? `<div class="ideal"><strong>Ideal para:</strong><ul class="ideal-list">${ideal.map(i=>`<li>${i}</li>`).join('')}</ul></div>` : ''}
         </div>
       </div>
     `;
@@ -739,7 +739,6 @@ function updateSummary(){
 }
 
 function openContactModal(){
-  // render final summary into #finalSummary
   const target = document.getElementById('finalSummary');
   const totals = computeTotals();
   const oneTime = selectedServices.filter(s=>s.type==='one-time');
@@ -759,12 +758,17 @@ function openContactModal(){
 
   const modal = document.getElementById('contactModal');
   modal.setAttribute('aria-hidden','false');
-  // populate contact form from localStorage if present
+
+  // Restaurar datos guardados
   const stored = JSON.parse(localStorage.getItem('client_info') || '{}');
-  if(stored.name) document.getElementById('clientName').value = stored.name;
-  if(stored.phone) document.getElementById('clientPhone').value = stored.phone;
-  if(stored.note) document.getElementById('clientNote').value = stored.note;
-  // focus name input
+  if(stored.name)     document.getElementById('clientName').value     = stored.name;
+  if(stored.lastName) document.getElementById('clientLastName').value = stored.lastName;
+  if(stored.phone)    document.getElementById('clientPhone').value    = stored.phone;
+  if(stored.email)    document.getElementById('clientEmail').value    = stored.email;
+  if(stored.empresa)  document.getElementById('clientEmpresa').value  = stored.empresa;
+  if(stored.cargo)    document.getElementById('clientCargo').value    = stored.cargo;
+  if(stored.note)     document.getElementById('clientNote').value     = stored.note;
+
   setTimeout(()=>{ const inp = document.getElementById('clientName'); if(inp) inp.focus(); },120);
 }
 
@@ -773,26 +777,41 @@ function closeContactModal(){
   if(modal) modal.setAttribute('aria-hidden','true');
 }
 
-// WhatsApp contact (owner phone) - replace with actual number (without +)
 const OWNER_WA = '5930989559127';
 
-function buildWhatsAppMessage(name, phone, note){
+function buildWhatsAppMessage(){
+  const name     = document.getElementById('clientName').value.trim();
+  const lastName = document.getElementById('clientLastName').value.trim();
+  const phone    = document.getElementById('clientPhone').value.trim();
+  const email    = document.getElementById('clientEmail').value.trim();
+  const empresa  = document.getElementById('clientEmpresa').value.trim();
+  const cargo    = document.getElementById('clientCargo').value.trim();
+  const note     = document.getElementById('clientNote').value.trim();
+
   const totals = computeTotals();
   const lines = [];
-  lines.push(`Hola, soy ${name}`);
-  lines.push(`Tel: ${phone}`);
+
+  lines.push(`Hola, soy ${name} ${lastName}`.trim());
+  if(empresa) lines.push(`Empresa: ${empresa}${cargo ? ' — ' + cargo : ''}`);
+  lines.push(`WhatsApp: ${phone}`);
+  if(email) lines.push(`Email: ${email}`);
+  lines.push('─────────────────');
   lines.push('Solicito cotización para:');
-  if(selectedPlan) lines.push(`- Plan: ${selectedPlan.name} (${formatUSD(selectedPlan.price)})`);
-  lines.push(`- Urgencia: ${selectedUrgency?selectedUrgency.name:'Estándar'} (+${formatUSD(totals.urgencyAdd)})`);
+  if(selectedPlan) lines.push(`• Plan: ${selectedPlan.name} (${formatUSD(selectedPlan.price)})`);
+  lines.push(`• Urgencia: ${selectedUrgency?selectedUrgency.name:'Estándar'} (+${formatUSD(totals.urgencyAdd)})`);
   const one = selectedServices.filter(s=>s.type==='one-time');
-  if(one.length){ one.forEach(s=> lines.push(`- Extra (one-time): ${s.name} (${formatUSD(s.price)})`)); }
+  if(one.length){ one.forEach(s=> lines.push(`• Extra: ${s.name} (${formatUSD(s.price)})`)); }
   const monthly = selectedServices.filter(s=>s.type==='monthly');
-  if(monthly.length){ monthly.forEach(s=> lines.push(`- Extra (mensual): ${s.name} (${formatUSD(s.price)}/mes)`)); }
+  if(monthly.length){ monthly.forEach(s=> lines.push(`• Mensual: ${s.name} (${formatUSD(s.price)}/mes)`)); }
+  lines.push('─────────────────');
   lines.push(`Total inicial: ${formatUSD(totals.initial)}`);
   if(monthly.length) lines.push(`Total mensual: ${formatUSD(monthly.reduce((a,b)=>a+b.price,0))}/mes`);
-  if(note) lines.push(`Notas: ${note}`);
+  if(note) lines.push(`\nNotas: ${note}`);
+
   return lines.join('\n');
 }
+
+
 
 document.addEventListener('DOMContentLoaded', ()=>{
   loadState();
@@ -882,15 +901,64 @@ document.addEventListener('DOMContentLoaded', ()=>{
     goToStep(3);
   });
 
-  document.getElementById('whatsappBtn').addEventListener('click', ()=>{
-    const name = document.getElementById('clientName').value.trim();
-    const phone = document.getElementById('clientPhone').value.trim();
-    const note = document.getElementById('clientNote').value.trim();
-    if(!name || !phone){ alert('Por favor completa nombre y teléfono (WhatsApp).'); return; }
-    // save client info locally
-    localStorage.setItem('client_info', JSON.stringify({ name, phone, note }));
 
-    const msg = buildWhatsAppMessage(name, phone, note);
+  document.getElementById('whatsappBtn').addEventListener('click', async ()=>{
+    const name     = document.getElementById('clientName').value.trim();
+    const lastName = document.getElementById('clientLastName').value.trim();
+    const phone    = document.getElementById('clientPhone').value.trim();
+    const email    = document.getElementById('clientEmail').value.trim();
+    const empresa  = document.getElementById('clientEmpresa').value.trim();
+    const cargo    = document.getElementById('clientCargo').value.trim();
+    const note     = document.getElementById('clientNote').value.trim();
+
+    if(!name || !phone){
+      alert('Por favor completa nombre y WhatsApp.');
+      return;
+    }
+
+    // Guardar en localStorage
+    localStorage.setItem('client_info', JSON.stringify(
+      { name, lastName, phone, email, empresa, cargo, note }
+    ));
+
+    const totals = computeTotals();
+    const one     = selectedServices.filter(s=>s.type==='one-time');
+    const monthly = selectedServices.filter(s=>s.type==='monthly');
+
+    const extrasText   = one.length     ? one.map(s=>`${s.name} (${formatUSD(s.price)})`).join(', ')     : 'Ninguno';
+    const mensualText  = monthly.length ? monthly.map(s=>`${s.name} (${formatUSD(s.price)}/mes)`).join(', ') : 'Ninguno';
+
+    // Parámetros para el template de EmailJS
+    const templateParams = {
+      from_name:      name,
+      from_lastname:  lastName,
+      from_email:     email || 'No proporcionado',
+      from_phone:     phone,
+      empresa:        empresa || 'No proporcionada',
+      cargo:          cargo   || 'No proporcionado',
+      plan:           selectedPlan ? `${selectedPlan.name} — ${formatUSD(selectedPlan.price)}` : 'No seleccionado',
+      urgencia:       selectedUrgency ? `${selectedUrgency.name} (+${formatUSD(totals.urgencyAdd)})` : 'Estándar',
+      extras:         extrasText,
+      total_mensual:  mensualText,
+      total_inicial:  formatUSD(totals.initial),
+      mensaje:        note || 'Sin mensaje adicional'
+    };
+
+    // Enviar email — no bloquea el flujo de WhatsApp
+    try {
+      await emailjs.send(
+        'service_vrwqtsp',   // reemplaza
+        'template_owhp7ij',  // reemplaza
+        templateParams
+      );
+      console.log('Email enviado correctamente');
+    } catch(err) {
+      console.warn('Error enviando email:', err);
+      // No mostrar error al usuario — WhatsApp sigue funcionando igual
+    }
+
+    // Abrir WhatsApp igual que antes
+    const msg = buildWhatsAppMessage();
     const url = `https://wa.me/${OWNER_WA}?text=` + encodeURIComponent(msg);
     window.open(url, '_blank');
   });
