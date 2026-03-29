@@ -27,6 +27,7 @@
 
 
 
+
   <script>
 
         // ===== MOBILE NAV =====
@@ -297,7 +298,7 @@
 <main>
  
   <!-- ===== HERO ===== -->
-  <section class="hero-full wrap">
+  <section class="hero-full ">
     <div class="hero-badge ">
       <span class="badge-dot">✦</span>
       Tu web profesional lista en 3–30 días hábiles según tu plan
@@ -309,7 +310,25 @@
     <p class="hero-sub ">Diseño premium, desarrollo rápido y resultados medibles.<br>Transformamos tu visión en una presencia digital que convierte visitantes en clientes.</p>
     <div class="hero-actions ">
       <a href="#cotizador" class="btn-primary btn-hero">Cotización Instantánea →</a>
-      <a href="#proceso" class="hero-link">agenda una llamada de 15–30 min</a>
+      <div class="hero-calendar-btn">
+        <!-- Google Calendar Appointment Scheduling begin -->
+        <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+        <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+        <script>
+        (function() {
+          var target = document.currentScript;
+          window.addEventListener('load', function() {
+            calendar.schedulingButton.load({
+              url: 'https://calendar.google.com/calendar/appointments/AcZssZ2a0Bspkh7qfRa5-IwW4xETWDYDWUbvlaQty6E=?gv=true',
+              color: '#b5e718',
+              label: 'Reservar una cita',
+              target,
+            });
+          });
+        })();
+        </script>
+        <!-- end Google Calendar Appointment Scheduling -->
+      </div>
     </div>
     <div class="hero-stats anim-fade-up anim-delay-4">
       <div class="stat">
@@ -386,7 +405,7 @@
       <h3>Resumen de tu selección</h3>
       <div class="summary-line"><span>Plan</span><span id="summaryPlan">—</span></div>
       <div class="summary-line"><span>Recargo por urgencia</span><span id="summaryUrgency">$0</span></div>
-      <div class="summary-line"><span>Extras (one-time)</span><span id="summaryExtras">$0</span></div>
+      <div class="summary-line"><span>Extras (Pago único)</span><span id="summaryExtras">$0</span></div>
       <div class="summary-line"><span>Mensualidades</span><span id="summaryMonthly">$0</span></div>
       <div class="summary-total"><span>Total inicial</span><span id="initial">$0</span></div>
       <button id="continueBtn" class="btn-primary btn-block">Continuar</button>
@@ -397,7 +416,7 @@
     <!-- Mobile sticky footer bar -->
     <div class="mobile-cotizador-footer" id="mobileCotizadorFooter">
       <button id="mobileBackBtn" class="btn-secondary mobile-back-btn" style="display:none">← Volver</button>
-      <button id="mobileContinueBtn" class="btn-primary btn-block mobile-continue-btn">Continuar →</button>
+      <button id="mobileContinueBtn" class="btn-primary btn-block mobile-continue-btn">CONTINUAR →</button>
     </div>
  
   </section>
@@ -439,27 +458,27 @@
         <div class="stars">★★★★★</div>
         <p class="testimonio-text">"Rápidos y muy profesionales — nuestra venta en línea creció 30% en el primer mes tras lanzar la web."</p>
         <div class="testimonio-autor">
-          <strong>Ana Martínez</strong>
-          <span>Gerente, TiendaEC</span>
-          <a href="#" class="ver-sitio">Ver sitio web ↗</a>
+          <strong>Pablo Torres, </strong>
+          <span>Gerente de marketing - LEE</span>
+          <a href="https://www.lee.com.ec" class="ver-sitio">Ver sitio web ↗</a>
         </div>
       </div>
       <div class="testimonio-card anim-fade-up anim-delay-2">
         <div class="stars">★★★★★</div>
         <p class="testimonio-text">"Necesitábamos una plataforma profesional para nuestro negocio. EcuaLink entendió perfectamente nuestra visión y el resultado superó nuestras expectativas."</p>
         <div class="testimonio-autor">
-          <strong>Carlos Vega</strong>
-          <span>Director, FinanzasEC</span>
-          <a href="#" class="ver-sitio">Ver sitio web ↗</a>
+          <strong>Karen Mora, </strong>
+          <span>Gerente de marketing digital - Grupo Calderón</span>
+          <a href="https://www.gcalderon.com" class="ver-sitio">Ver sitio web ↗</a>
         </div>
       </div>
       <div class="testimonio-card anim-slide-right anim-delay-3">
         <div class="stars">★★★★★</div>
         <p class="testimonio-text">"Como empresa de servicios, nuestro sitio web es fundamental. EcuaLink desarrolló una solución que nos permite gestionar nuestra presencia digital de manera eficiente."</p>
         <div class="testimonio-autor">
-          <strong>Roberto Flores</strong>
-          <span>Propietario, ServiciosPlus</span>
-          <a href="#" class="ver-sitio">Ver sitio web ↗</a>
+          <strong>Francisco Garcés </strong>
+          <span>- CEO de Obesimed</span>
+          <a href="https://www.obesimed.com.ec" class="ver-sitio">Ver sitio web ↗</a>
         </div>
       </div>
     </div>
@@ -473,32 +492,6 @@
     <p class="section-tag anim-fade-in">CÓMO FUNCIONA</p>
     <h2 class="section-title anim-fade-up anim-delay-1">Proceso <span class="gradient-text">Simple</span> y <span class="gradient-text-2">Rápido</span></h2>
     <p class="section-sub anim-fade-up anim-delay-2">En solo 3 pasos completas tu solicitud y comenzamos tu proyecto</p>
- 
-    <div class="process-steps-bar">
-      <div class="step-bar-item active-step anim-slide-left anim-delay-1">
-        <span class="step-num-circle filled">1</span>
-        <div>
-          <strong>Elige tu plan</strong>
-          <p>Selecciona el plan base y personaliza con add-ons</p>
-        </div>
-      </div>
-      <div class="step-bar-divider anim-fade-in anim-delay-2"></div>
-      <div class="step-bar-item anim-fade-up anim-delay-2">
-        <span class="step-num-circle">2</span>
-        <div>
-          <strong>Define tu urgencia</strong>
-          <p>Elige cuándo necesitas tu proyecto</p>
-        </div>
-      </div>
-      <div class="step-bar-divider anim-fade-in anim-delay-3"></div>
-      <div class="step-bar-item anim-slide-right anim-delay-3">
-        <span class="step-num-circle">3</span>
-        <div>
-          <strong>Completa tus datos</strong>
-          <p>Completa tu solicitud y te contactamos por WhatsApp</p>
-        </div>
-      </div>
-    </div>
  
     <div class="process-cards">
       <div class="process-card anim-fade-up anim-delay-1">
@@ -687,7 +680,7 @@
       </div>
       <div class="footer-contact-block">
         <p>📍 Guayaquil: av Francisco de Orellana 507 y Eugenio Almazán.</p>
-        <p>✉ <a href="mailto:hola@ecualink.com">hola@ecualink.com</a></p>
+        <p>✉ <a href="mailto:hola@ecualink.com">hola@grupoecualink.com</a></p>
         <p>📞 +593 98 323 8830</p>
       </div>
       <div class="footer-cta-row">
@@ -729,7 +722,6 @@
       <a href="https://www.grupoecualink.com/blog/">Blog</a>
       <a href="https://www.grupoecualink.com/casos-de-exitos/">Casos de éxitos</a>
       <a href="https://www.grupoecualink.com/nosotros/trabaja-con-nosotros/">Trabaja con nosotros</a>
-      <a href="https://www.grupoecualink.com/nosotros/equipo/">Our team</a>
     </div>
 
   </div>

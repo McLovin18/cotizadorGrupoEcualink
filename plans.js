@@ -5,7 +5,7 @@ const webPlans = [
   {
     id: 'starter',
     name: 'Starter',
-    price: 600,
+    price: 399,
     days: '2-7 días hábiles',
     shortDesc: 'Para validar ideas y tener presencia inmediata',
     tagline: 'Simple y Rápido',
@@ -23,7 +23,7 @@ const webPlans = [
   {
     id: 'business',
     name: 'Business',
-    price: 1000,
+    price: 499,
     days: '7-14 días hábiles',
     shortDesc: 'Sitio institucional de varias páginas para crecer profesionalmente',
     tagline: 'Profesional y flexible',
@@ -41,9 +41,9 @@ const webPlans = [
   {
     id: 'pro',
     name: 'Pro Plus',
-    price: 1500,
+    price: 999,
     days: '14-30 días hábiles',
-    shortDesc: 'Paquete completo para marcas y tiendas',
+    shortDesc: 'Paquete completo para marcas y tiendas en línea. WordPress o Shopify.',
     tagline: 'Completo y escalable',
     desc: 'Tienda o sitio corporativo • Integraciones • Soporte',
     features: [
@@ -55,14 +55,22 @@ const webPlans = [
       '3 rondas de revisión'
     ],
     idealFor: ['Marcas', 'E-commerce pequeño', 'Proyectos con crecimiento planificado']
-  }
+  },
 ];
 
 const services = [
-  { id: 'seo', name: "SEO Básico", price: 60, type: "monthly" },
-  { id: 'mantenimiento', name: "Mantenimiento", price: 40, type: "monthly" },
-  { id: 'seguridad', name: "Seguridad Web", price: 120, type: "one-time" },
-  { id: 'integracion', name: "Integración Avanzada", price: 250, type: "one-time" }
+  // SEO
+  { id: 'seo-10',  name: 'SEO 10 Keywords',  price: 399,  type: 'monthly' },
+  { id: 'seo-20',  name: 'SEO 20 Keywords',  price: 499,  type: 'monthly' },
+  { id: 'seo-100', name: 'SEO 100 Keywords', price: 999,  type: 'monthly' },
+  { id: 'seo-250', name: 'SEO 250 Keywords', price: 1499, type: 'monthly' },
+  // Mantenimiento
+  { id: 'mant-starter',  name: 'Mantenimiento Plan Starter',   price: 150, type: 'monthly' },
+  { id: 'mant-business', name: 'Mantenimiento Plan Business',  price: 250, type: 'monthly' },
+  { id: 'mant-pro',      name: 'Mantenimiento Plan Pro Plus',  price: 500, type: 'monthly' },
+  // Dominios
+  { id: 'dominio-com', name: 'Dominio .com', price: 20, type: 'one-time' },
+  { id: 'dominio-ec',  name: 'Dominio .ec',  price: 40, type: 'one-time' },
 ];
 
 // Opciones de urgencia: multiplier aplicado al precio del plan (porcentaje)

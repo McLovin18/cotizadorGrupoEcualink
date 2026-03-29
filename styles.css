@@ -1418,3 +1418,60 @@ body{
   }
   .section-portafolio { padding: 48px 0; }
 }
+
+
+
+/* ===== GOOGLE CALENDAR BTN ===== */
+.hero-calendar-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Sobrescribir estilos del botón de Google para que se vea como el hero-link */
+.hero-calendar-btn .scheduling-button {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-family: Inter, system-ui, Arial, sans-serif !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.hero-calendar-btn .scheduling-button::before {
+  content: "📅";
+  font-size: 16px;
+}
+
+.hero-calendar-btn .scheduling-button:hover {
+  color: var(--accent-dark) !important;
+  background: transparent !important;
+}
+
+/* Dark mode */
+[data-theme="dark"] .hero-calendar-btn .scheduling-button {
+  color: var(--muted) !important;
+}
+[data-theme="dark"] .hero-calendar-btn .scheduling-button:hover {
+  color: var(--accent) !important;
+}
+
+
+
+
+/* Portafolio link — dark mode texto negro */
+[data-theme="dark"] .portafolio-link {
+  color: #0a0f0e;
+}
+
+/* Hover — negrita en ambos modos */
+.portafolio-link:hover {
+  background: #d4ff1a;
+  font-weight: 800;
+  color: #0a0f0e;
+}
