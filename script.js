@@ -952,10 +952,30 @@ document.addEventListener('DOMContentLoaded', ()=>{
         templateParams
       );
       console.log('Email enviado correctamente');
+
+
+    if(email) {
+      await emailjs.send(
+        'service_ykex2sa',
+        'template_3g3xjur',  // el nuevo template
+        {
+          ...templateParams,
+          to_email: email,    // EmailJS usa to_email para el destinatario
+          to_name:  name
+        }
+      );
+    }
+
     } catch(err) {
       console.warn('Error enviando email:', err);
       // No mostrar error al usuario — WhatsApp sigue funcionando igual
     }
+
+
+    
+
+
+
 
     // Abrir WhatsApp igual que antes
     const msg = buildWhatsAppMessage();
