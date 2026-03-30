@@ -947,8 +947,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     // Enviar email — no bloquea el flujo de WhatsApp
     try {
       await emailjs.send(
-        'service_vrwqtsp',   // reemplaza
-        'template_owhp7ij',  // reemplaza
+        'service_ykex2sa',   // reemplaza
+        'template_446jf8k',  // reemplaza
         templateParams
       );
       console.log('Email enviado correctamente');
